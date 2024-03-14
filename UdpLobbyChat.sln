@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyServer", "LobbyServer\LobbyServer.csproj", "{3CBCBD57-2FA8-439B-9F26-725BB9C6F275}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyClient", "LobbyClient\LobbyClient.csproj", "{E3A6937B-169B-43B4-9458-954500C2869A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3CBCBD57-2FA8-439B-9F26-725BB9C6F275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CBCBD57-2FA8-439B-9F26-725BB9C6F275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CBCBD57-2FA8-439B-9F26-725BB9C6F275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CBCBD57-2FA8-439B-9F26-725BB9C6F275}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3A6937B-169B-43B4-9458-954500C2869A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3A6937B-169B-43B4-9458-954500C2869A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3A6937B-169B-43B4-9458-954500C2869A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3A6937B-169B-43B4-9458-954500C2869A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
