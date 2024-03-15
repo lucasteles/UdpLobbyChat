@@ -10,6 +10,7 @@ public sealed class Peer(string username, IPAddress requestAddress)
     public PeerId PeerId { get; init; } = Guid.NewGuid();
     public string Username { get; } = username;
     public IPAddress RequestAddress { get; } = requestAddress;
+    public IPEndPoint? LocalEndpoint { get; init; }
     public IPEndPoint? Endpoint { get; set; }
     public bool Connected => Endpoint is not null;
 }
@@ -88,7 +89,7 @@ public sealed class Lobby(
     }
 }
 
-public sealed record EnterLobbyRequest(string LobbyName, string Username);
+public sealed record EnterLobbyRequest(string LobbyName, string Username, IPEndPoint? LocalEndpoint = null);
 
 public sealed record EnterLobbyResponse(
     string Username,

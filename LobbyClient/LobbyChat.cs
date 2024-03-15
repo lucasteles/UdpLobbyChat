@@ -62,7 +62,9 @@ public class LobbyChat(
     void OnMessage(Message message)
     {
         if (string.IsNullOrWhiteSpace(message.Body)) return;
-        var peer = knownPeers.Values.FirstOrDefault(x => Equals(x.Endpoint, message.EndPoint));
+        var peer = knownPeers.Values.FirstOrDefault(x =>
+            Equals(x.Endpoint, message.EndPoint) ||
+            (x.LocalEndpoint is not null && Equals(x.LocalEndpoint, message.EndPoint)));
         PrintPeerMessage(peer, message.Body, message.EndPoint);
     }
 
@@ -99,7 +101,10 @@ public class LobbyChat(
                 if (!peer.Connected || peer.PeerId == user?.PeerId)
                     continue;
 
-                await outbox.Post(peer.Endpoint, message);
+                if (Equals(peer.Endpoint.Address, userPeer?.Endpoint.Address) && peer.LocalEndpoint is not null)
+                    await outbox.Post(peer.LocalEndpoint, message);
+                else
+                    await outbox.Post(peer.Endpoint, message);
             }
         }
     }
@@ -226,9 +231,16 @@ public class LobbyChat(
     void PrintPeerConnectionStatus(Peer peer)
     {
         if (peer.Connected)
+        {
             console.WriteLine($"{peer.Username} connected from {peer.Endpoint}", ConsoleColor.Magenta);
+
+            if (peer.LocalEndpoint is not null && Equals(peer.Endpoint.Address, user?.IP))
+                console.WriteLine(
+                    $"{peer.Username} is connecting from the same network, using local endpoint {peer.LocalEndpoint}",
+                    ConsoleColor.Yellow);
+        }
         else
-            console.WriteLine($"{peer.Username} is connecting {peer.RequestAddress}...", ConsoleColor.Yellow);
+            console.WriteLine($"{peer.Username} is connecting from {peer.RequestAddress}...", ConsoleColor.Yellow);
     }
 
     void StartLobbyRefreshTimer() => Task.Run(async () =>

@@ -35,8 +35,15 @@ public sealed class UserIO
         }
     }
 
-    public Task<string> Ask(CancellationToken cancellationToken) =>
-        Ask(string.Empty, null, cancellationToken);
+    public async Task<string> Ask(CancellationToken cancellationToken)
+    {
+        var result = await Ask(string.Empty, null, cancellationToken);
+
+        lock (locker)
+            Console.SetCursorPosition(0, Console.CursorTop - 1);
+
+        return result;
+    }
 
     public async Task<string> Ask(
         string label,
@@ -74,9 +81,6 @@ public sealed class UserIO
             if (string.IsNullOrWhiteSpace(result) && defaultValue is not null)
                 result = defaultValue;
         }
-
-        lock (locker)
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
 
         return result;
     }

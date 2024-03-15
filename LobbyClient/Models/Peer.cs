@@ -9,4 +9,5 @@ public sealed class Peer
     public required IPAddress RequestAddress { get; init; }
     public required IPEndPoint Endpoint { get; set; }
     public bool Connected { get; set; }
+    public IPEndPoint? LocalEndpoint { get; init; }
 }

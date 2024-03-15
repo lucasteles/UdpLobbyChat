@@ -1,4 +1,6 @@
+using System.Net;
 using System.Net.Http.Json;
+using System.Net.Sockets;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Backdash.JsonConverters;
@@ -25,15 +27,18 @@ public sealed class LobbyHttpClient(Settings appSettings)
 
     public async Task<User> EnterLobby(string lobbyName, string username, CancellationToken ct)
     {
+        var localEndpoint = await GetLocalEndpoint();
+
         var response = await client.PostAsJsonAsync("/lobby", new
         {
             lobbyName,
             username,
-        }, jsonOptions, cancellationToken: ct);
+            localEndpoint,
+        }, jsonOptions, ct);
 
         response.EnsureSuccessStatusCode();
 
-        var result = await response.Content.ReadFromJsonAsync<User>(jsonOptions, cancellationToken: ct)
+        var result = await response.Content.ReadFromJsonAsync<User>(jsonOptions, ct)
                      ?? throw new InvalidOperationException();
 
         client.DefaultRequestHeaders.Clear();
@@ -41,6 +46,25 @@ public sealed class LobbyHttpClient(Settings appSettings)
 
         return result;
     }
+
+    async Task<IPEndPoint?> GetLocalEndpoint()
+    {
+        try
+        {
+            using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+            await socket.ConnectAsync("8.8.8.8", 65530);
+            if (socket.LocalEndPoint is not IPEndPoint { Address: { } ipAddress })
+                return null;
+            return new(ipAddress, appSettings.LocalPort);
+        }
+        catch (Exception)
+        {
+            // skip
+        }
+
+        return null;
+    }
+
 
     public async Task<Lobby> GetLobby(User user, CancellationToken ct) =>
         await client.GetFromJsonAsync<Lobby>($"/lobby/{user.LobbyName}", jsonOptions, cancellationToken: ct)
